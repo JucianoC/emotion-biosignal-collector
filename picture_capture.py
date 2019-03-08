@@ -17,8 +17,8 @@ class PicutureCapture:
     def create_image_output_path(self, capture_datetime):
         return os.path.join(self.output_path, "capture_{}.png".format(capture_datetime.isoformat()))
 
-    def capture(self, collect_event):
-        while True:
+    def capture(self, collect_event, terminate_event):
+        while not terminate_event.is_set():
             collect_event.wait()
             current_datetime = pytz.utc.localize(datetime.utcnow())
             output_image_name = self.create_image_output_path(current_datetime)
