@@ -16,11 +16,11 @@ class Collect:
                 for i in range(5):
                     logger.info('Part {}', i)
                     picture_capture.start_capture()
-                    time.sleep(10)
+                    time.sleep(3)
                     picture_capture.stop_capture()
 
             logger.info("Process alive: {}",
-                        picture_capture.capture_process.is_alive())
+                        picture_capture._capture_process.is_alive())
 
 
 if __name__ == '__main__':

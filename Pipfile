@@ -17,7 +17,7 @@ pytz = "*"
 loguru = "*"
 
 [requires]
-python_version = "3.6"
+python_version = "3.7"
 
 [scripts]
 format = "yapf -i -r --style google --no-local-style -p -vv ."
