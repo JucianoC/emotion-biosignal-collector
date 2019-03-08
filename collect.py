@@ -4,14 +4,14 @@ from multiprocessing import Manager
 
 from loguru import logger
 
-from picture_capture import PicutureCapture
+from capture.picture_capture import PicutureCapture
 
 
 class Collect:
 
     def run(self):
         with Manager() as manager:
-            with PicutureCapture(1, 'captures', manager.Event(),
+            with PicutureCapture(1, 'collects', manager.Event(),
                                  manager.Event()) as picture_capture:
                 for i in range(5):
                     logger.info('Part {}', i)
