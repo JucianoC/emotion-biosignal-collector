@@ -1,0 +1,20 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+ipython = "*"
+yapf = "*"
+pytest = "*"
+pytest-cov = "*"
+pylint = "*"
+
+[packages]
+pysignal = "*"
+opencv-python = "*"
+pytz = "*"
+loguru = "*"
+
+[requires]
+python_version = "3.6"
