@@ -9,12 +9,15 @@ yapf = "*"
 pytest = "*"
 pytest-cov = "*"
 pylint = "*"
+ipdb = "*"
 
 [packages]
 pysignal = "*"
 opencv-python = "*"
 pytz = "*"
 loguru = "*"
+pyserial = "*"
+python-dateutil = "*"
 
 [requires]
 python_version = "3.7"
