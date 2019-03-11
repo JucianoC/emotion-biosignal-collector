@@ -11,7 +11,8 @@ from loguru import logger
 
 from capture.picture_capture import PicutureCapture
 from capture.signal_capture import SignalCapture
-from stimulus.stimulus import Stimulus
+from stimulus_manager.stimulus import Stimulus
+from stimulus_manager.self_assessment_manikin import SelfAssessmentManikin
 
 
 def load_env():
@@ -34,6 +35,14 @@ def load_env():
 
 class Collect:
 
+    def __init__(self):
+        cv2.namedWindow('stimulus', cv2.WND_PROP_FULLSCREEN)
+        cv2.setWindowProperty('stimulus', cv2.WND_PROP_FULLSCREEN,
+                              cv2.WINDOW_FULLSCREEN)
+
+    def __del__(self):
+        cv2.destroyWindow('stimulus')
+
     def run(self):
         with Manager() as manager:
             capture_index = manager.Value(int, value=0)
@@ -49,6 +58,8 @@ class Collect:
                     stimulus = Stimulus(
                         int(os.getenv("EBC_STIMULUS_EXPOSITION_PERIOD")),
                         os.getenv("EBC_STIMULUS_IAPS_PATH"))
+                    sam = SelfAssessmentManikin(
+                        int(os.getenv('EBC_SAM_TIME_LIMIT', "15")))
                     for i in range(5):
                         capture_index.value = i
                         logger.info('Capture {:04}', i)
@@ -58,7 +69,16 @@ class Collect:
                         picture_capture.stop_capture()
                         signal_capture.stop_capture()
                         signals = signal_capture.pop_buffer()
+                        try:
+                            sam.apply_test()
+                        except ValueError:
+                            logger.warning(
+                                "Incorrect response in SAM, missed capture {:04}",
+                                capture_index.value)
+                        # time.sleep(10)
                         logger.info("{:03} Singals: {}", len(signals), signals)
+                        logger.info("Valence: {} | Arousal: {}", sam.valence,
+                                    sam.arousal)
 
             logger.info("Picture alive: {}",
                         picture_capture._capture_process.is_alive())

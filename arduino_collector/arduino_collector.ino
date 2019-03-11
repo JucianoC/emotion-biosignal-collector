@@ -28,5 +28,5 @@ void loop()
   Serial.print(gsrSignal);
   Serial.print(",");
   Serial.println(objectTemperature);
-  delay(20);
+  delay(50);
 }

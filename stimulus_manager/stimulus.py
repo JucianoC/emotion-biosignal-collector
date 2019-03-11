@@ -7,9 +7,7 @@ from itertools import count
 import cv2
 from loguru import logger
 
-
-class EndOfStimuliSet(BaseException):
-    ...
+from stimulus_manager.exceptions import EndOfStimuliSet
 
 
 class Stimulus:
@@ -33,12 +31,6 @@ class Stimulus:
         self._capture_count = count(1)
         self._current_capture = 0
         self._exposition_period = exposition_period
-        cv2.namedWindow('stimulus', cv2.WND_PROP_FULLSCREEN)
-        cv2.setWindowProperty('stimulus', cv2.WND_PROP_FULLSCREEN,
-                              cv2.WINDOW_FULLSCREEN)
-
-    def __del__(self):
-        cv2.destroyWindow('stimulus')
 
     @property
     def stimulus(self) -> str:
