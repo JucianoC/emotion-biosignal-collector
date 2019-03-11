@@ -19,6 +19,8 @@ loguru = "*"
 pyserial = "*"
 python-dateutil = "*"
 python-dotenv = "*"
+sqlalchemy = "*"
+alembic = "*"
 
 [requires]
 python_version = "3.7"

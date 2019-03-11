@@ -98,3 +98,4 @@ ENV/
 
 # project-stuff
 collects/*
+ebcdb.sqlite

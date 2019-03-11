@@ -13,13 +13,14 @@ from capture.picture_capture import PicutureCapture
 from capture.signal_capture import SignalCapture
 from stimulus_manager.stimulus import Stimulus
 from stimulus_manager.self_assessment_manikin import SelfAssessmentManikin
+from serializer import Serializer
 
 
 def load_env():
     dotenv.load_dotenv()
     missing_keys = {
         "EBC_PICTURE_CAPTURE_OUTPUT_PATH", "EBC_SIGNAL_PORT",
-        "EBC_STIMULUS_IAPS_PATH"
+        "EBC_STIMULUS_IAPS_PATH", "EBC_SUBJECT_ID", "EBC_SESSION_ID"
     }.difference(set(os.environ.keys()))
     assert not missing_keys, "You shold define the following environment variables: {}".format(
         missing_keys)
@@ -39,6 +40,8 @@ class Collect:
         cv2.namedWindow('stimulus', cv2.WND_PROP_FULLSCREEN)
         cv2.setWindowProperty('stimulus', cv2.WND_PROP_FULLSCREEN,
                               cv2.WINDOW_FULLSCREEN)
+        self.serializer = Serializer(
+            int(os.getenv("EBC_SUBJECT_ID")), int(os.getenv("EBC_SESSION_ID")))
 
     def __del__(self):
         cv2.destroyWindow('stimulus')
@@ -79,7 +82,9 @@ class Collect:
                         logger.info("{:03} Singals: {}", len(signals), signals)
                         logger.info("Valence: {} | Arousal: {}", sam.valence,
                                     sam.arousal)
-
+                        self.serializer.serialize(
+                            capture_index.value, stimulus.stimulus, sam.valence,
+                            sam.arousal, signals)
             logger.info("Picture alive: {}",
                         picture_capture._capture_process.is_alive())
             logger.info("Signal alive: {}",
