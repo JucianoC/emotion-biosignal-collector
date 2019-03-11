@@ -5,19 +5,22 @@ from abc import ABCMeta
 from abc import abstractmethod
 from multiprocessing import Process
 from multiprocessing import Event
-from itertools import count
+from multiprocessing import Value
 
 
 class BaseCapture(metaclass=ABCMeta):
 
-    def __init__(self, interval: float, capture_event: Event,
-                 terminate_event: Event) -> None:
+    def __init__(self, interval: float, capture_index: Value,
+                 capture_event: Event, terminate_event: Event) -> None:
         self._interval = interval
         self._capture_process = None
         self._capture_event = capture_event
         self._terminate_event = terminate_event
-        self._capture_count = count(1)
-        self._current_capture = 0
+        self._current_capture = capture_index
+
+    @property
+    def current_capture(self):
+        return self._current_capture.value
 
     def __enter__(self) -> BaseCapture:
         self._capture_process = Process(target=self._capture)
@@ -31,7 +34,6 @@ class BaseCapture(metaclass=ABCMeta):
 
     def start_capture(self) -> None:
         assert self._capture_process, "Capture process not started."
-        self._current_capture = next(self._capture_count)
         self._capture_event.set()
 
     def stop_capture(self) -> None:

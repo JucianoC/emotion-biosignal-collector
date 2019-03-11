@@ -14,6 +14,7 @@ void setup()
   Serial.begin(9600);
   mlx.begin();
   mlx.get_id();
+  Serial.println("Starting collector...");
 }
 
 

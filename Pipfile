@@ -18,6 +18,7 @@ pytz = "*"
 loguru = "*"
 pyserial = "*"
 python-dateutil = "*"
+python-dotenv = "*"
 
 [requires]
 python_version = "3.7"
