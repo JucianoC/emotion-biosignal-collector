@@ -4,6 +4,7 @@ import cv2
 
 
 class SelfAssessmentManikin:
+    _acceptable_keys = frozenset(('1', '2', '3', '4', '5', '6', '7', '8', '9'))
 
     def __init__(self, time_limit: int) -> None:
         self._time_limit = time_limit
@@ -17,9 +18,8 @@ class SelfAssessmentManikin:
         valence_key = cv2.waitKey(self._time_limit * 500)
         cv2.imshow('stimulus', self._arousal_img)
         arousal_key = cv2.waitKey(self._time_limit * 500)
-        acceptable_keys = ('1', '2', '3', '4', '5', '6', '7', '8', '9')
-        if chr(valence_key) not in acceptable_keys or chr(
-                arousal_key) not in acceptable_keys:
+        if chr(valence_key) not in self._acceptable_keys or chr(
+                arousal_key) not in self._acceptable_keys:
             raise ValueError("Some not acceptable key was typed.")
-        self.valence = int(chr(valence_key))
-        self.arousal = int(chr(arousal_key))
+        self.valence = 10 - int(chr(valence_key))
+        self.arousal = 10 - int(chr(arousal_key))
