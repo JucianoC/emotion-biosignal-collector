@@ -4,6 +4,7 @@
 
 MLX90615 mlx = MLX90615();
 const int GSR=A1;
+const int BVP=A0;
 int gsrSignal = 0;
 int bvpSignal = 0;
 float objectTemperature = 0.0;
@@ -20,7 +21,7 @@ void setup()
 
 void loop()
 {
-  // at this point the PPG should be readed
+  bvpSignal = analogRead(BVP);
   gsrSignal = analogRead(GSR);
   objectTemperature = mlx.get_object_temp();
   Serial.print(bvpSignal);
