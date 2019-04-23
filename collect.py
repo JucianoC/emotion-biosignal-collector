@@ -31,6 +31,8 @@ def load_env():
         os.getenv("EBC_SIGNAL_BOUND_RATE", "9600"),
         'EBC_STIMULUS_EXHIBITION_TIME':
         os.getenv("EBC_STIMULUS_EXHIBITION_TIME", "10"),
+        "EBC_STIMULUS_SELECTED_SET":
+        os.getenv("EBC_STIMULUS_SELECTED_SET", "[]"),
     })
 
 
@@ -59,13 +61,19 @@ class Collect:
                         manager.list(), 0, capture_index, manager.Event(),
                         manager.Event()) as signal_capture:
                     stimulus = Stimulus(
-                        int(os.getenv("EBC_STIMULUS_EXPOSITION_PERIOD")),
-                        os.getenv("EBC_STIMULUS_IAPS_PATH"))
+                        int(os.getenv("EBC_STIMULUS_EXPOSITION_TIME")),
+                        os.getenv("EBC_STIMULUS_IAPS_PATH"),
+                        list(
+                            map(
+                                str,
+                                json.loads(
+                                    os.getenv("EBC_STIMULUS_SELECTED_SET")))))
                     sam = SelfAssessmentManikin(
                         int(os.getenv('EBC_SAM_TIME_LIMIT', "15")))
-                    for i in range(5):
+                    for i, picture in enumerate(stimulus.stimulus_list):
                         capture_index.value = i
-                        logger.info('Capture {:04}', i)
+                        logger.info('Capture {} - Picture {}'.format(
+                            i, picture))
                         signal_capture.start_capture()
                         picture_capture.start_capture()
                         stimulus.exhibit_stimulus()
@@ -78,17 +86,12 @@ class Collect:
                             logger.warning(
                                 "Incorrect response in SAM, missed capture {:04}",
                                 capture_index.value)
-                        # time.sleep(10)
-                        logger.info("{:03} Singals: {}", len(signals), signals)
+                        logger.info("{:03} Singnals: {}", len(signals), signals)
                         logger.info("Valence: {} | Arousal: {}", sam.valence,
                                     sam.arousal)
                         self.serializer.serialize(
                             capture_index.value, stimulus.stimulus, sam.valence,
                             sam.arousal, signals)
-            logger.info("Picture alive: {}",
-                        picture_capture._capture_process.is_alive())
-            logger.info("Signal alive: {}",
-                        signal_capture._capture_process.is_alive())
 
 
 if __name__ == '__main__':

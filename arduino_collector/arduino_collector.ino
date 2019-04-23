@@ -3,7 +3,7 @@
 
 
 MLX90615 mlx = MLX90615();
-const int GSR=A1;
+const int GSR=A2;
 const int BVP=A0;
 int gsrSignal = 0;
 int bvpSignal = 0;

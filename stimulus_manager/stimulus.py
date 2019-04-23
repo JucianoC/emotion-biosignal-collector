@@ -1,6 +1,7 @@
 import time
 import os
 from typing import List
+from typing import Iterable
 import random
 from itertools import count
 
@@ -17,6 +18,7 @@ class Stimulus:
                  stimulus_path: str,
                  selected_stimulus: List[str] = []) -> None:
         self._stimulus_path = stimulus_path
+        self._stimulus_list = selected_stimulus
         self._selected_stimulus = iter(selected_stimulus)
         self._random_stimulus = len(selected_stimulus) == 0
         self._stimulus_exhibited = set()
@@ -31,6 +33,10 @@ class Stimulus:
         self._capture_count = count(1)
         self._current_capture = 0
         self._exposition_period = exposition_period
+
+    @property
+    def stimulus_list(self) -> List[str]:
+        return self._stimulus_list
 
     @property
     def stimulus(self) -> str:
